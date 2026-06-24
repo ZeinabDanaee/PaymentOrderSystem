@@ -20,27 +20,7 @@ namespace OrderService.Infrastructure.Persistence
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
-
-            modelBuilder.Entity<Order>(entity =>
-            {
-                entity.HasKey(x => x.Id);
-
-                entity.HasMany(x => x.Items)
-                      .WithOne()
-                      .HasForeignKey(x => x.OrderId);
-
-                entity.Property(x => x.TotalAmount)
-                      .HasPrecision(18, 2);
-            });
-
-            modelBuilder.Entity<OrderItem>(entity =>
-            {
-                entity.HasKey(x => x.Id);
-
-                entity.Property(x => x.Price)
-                      .HasPrecision(18, 2);
-            });
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
         }
     }
 }
