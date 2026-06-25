@@ -2,6 +2,18 @@
 
 public class Order
 {
+    public Order(string customerId)
+    {
+        Id = Guid.NewGuid();
+        CustomerId = customerId;
+        CreatedAt = DateTime.UtcNow;
+        Status = OrderStatus.Pending;
+    }
+
+    private Order()
+    {
+        
+    }
     public Guid Id { get; set; }
 
     public string CustomerId { get; set; } = null!;

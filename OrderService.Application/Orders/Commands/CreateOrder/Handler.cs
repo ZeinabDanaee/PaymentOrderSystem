@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using OrderService.Application.Orders.Abstractions;
 using OrderService.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -10,33 +11,34 @@ namespace OrderService.Application.Orders.Commands.CreateOrder
 {
     public class Handler
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IOrderRepository _orderRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public Handler(ApplicationDbContext context)
+        public Handler(
+            IOrderRepository orderRepository,
+            IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _orderRepository = orderRepository;
+            _unitOfWork = unitOfWork;
         }
 
-        public async Task<Guid> Handle(Command request, CancellationToken cancellationToken)
+        public async Task<Guid> Handle(
+    Command request,
+    CancellationToken cancellationToken)
         {
-            var order = new Order
+            var order = new Order(request.CustomerId);
+
+            foreach (var item in request.Items)
             {
-                Id = Guid.NewGuid(),
-                CustomerId = request.CustomerId,
-                CreatedAt = DateTime.UtcNow,
-                Status = 0,
-                Items = request.Items.Select(x => new OrderItem
-                {
-                    Id = Guid.NewGuid(),
-                    ProductId = x.ProductId,
-                    Quantity = x.Quantity,
-                    Price = x.Price
-                }).ToList()
-            };
+                order.AddItem(
+                    item.ProductId,
+                    item.Quantity,
+                    item.Price);
+            }
 
-            _context.Orders.Add(order);
+            _orderRepository.Add(order);
 
-            await _context.SaveChangesAsync(cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return order.Id;
         }
