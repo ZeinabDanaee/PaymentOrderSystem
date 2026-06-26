@@ -1,3 +1,4 @@
+using OrderService.Application;
 using OrderService.Infrastructure;
 
 
@@ -9,6 +10,9 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Register Application layer
+builder.Services.AddApplication();
 
 builder.Services.AddInfrastructure(builder.Configuration);
 

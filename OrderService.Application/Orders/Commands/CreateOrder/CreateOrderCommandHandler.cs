@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 
 namespace OrderService.Application.Orders.Commands.CreateOrder
 {
-    public class Handler
+    public sealed class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Guid>
     {
         private readonly IOrderRepository _orderRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public Handler(
+        public CreateOrderCommandHandler(
             IOrderRepository orderRepository,
             IUnitOfWork unitOfWork)
         {
@@ -23,8 +23,8 @@ namespace OrderService.Application.Orders.Commands.CreateOrder
         }
 
         public async Task<Guid> Handle(
-    Command request,
-    CancellationToken cancellationToken)
+            CreateOrderCommand request,
+            CancellationToken cancellationToken)
         {
             var order = new Order(request.CustomerId);
 
