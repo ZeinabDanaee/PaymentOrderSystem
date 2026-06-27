@@ -38,7 +38,7 @@ public class ValidationBehavior<TRequest, TResponse>
 
         if (failures.Any())
         {
-            throw new ValidationException(failures);
+            throw new OrderService.Application.Common.Exceptions.ValidationException(failures);
         }
 
         return await next();
